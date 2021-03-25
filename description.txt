@@ -1,0 +1,11 @@
+A collection of items and tweaks to make growing and gathering plants faster and more convenient
+
+Features:
+	Gaia Staff - An upgraded Staff of Regrowth that greatly increases drop rate of plants on harvest, automatically replants seeds in planter boxes and clay pots, and instantly grows trees from planted saplings
+	Growth and Spirit Lanterns - Increase the growth rate of plants within range. The Spirit variant has a stronger effect and also forces all nearby plants to always bloom when fully grown.
+	Transmutation Table - An upgraded Alchemy Table that gives a 66% chance to conserve potion ingredients, and also acts as a water source
+
+Changes:
+	The Staff of Regrowth and Gaia Staff can be auto-selected when hovering over plants, and will target plants while Smart Cursor is enabled.
+
+This mod is a work-in-progress, contents are subject to change and further features may be added.
