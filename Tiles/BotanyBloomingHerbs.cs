@@ -3,7 +3,7 @@ using Terraria.ModLoader;
 using Terraria.ObjectData;
 using Terraria.ID;
 
-namespace BotanyPlus
+namespace BotanyPlus.Tiles
 {
     public class BotanyBloomingHerbs : ModTile
     {
