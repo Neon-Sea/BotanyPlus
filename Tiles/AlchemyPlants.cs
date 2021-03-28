@@ -9,40 +9,43 @@ namespace BotanyPlus
     {
         public override void RandomUpdate(int i, int j, int type)
         {
-            if (Main.tileAlch[type] && type < TileID.BloomingHerbs)
+            if (Main.tileAlch[type])
             {
-                int growthRange = 12; //range at which Growth Stations take effect
-                int growthRate = 10 * ((Main.tile[i,j].frameX / 18 == 6) ? 2 : 1); //growth rate multiplier - doubled for shiverthorn, may adjust
-                bool station1flag = false;
-                for (int xTile = i - growthRange; xTile <= i + growthRange; xTile++)
+                if (type == TileID.ImmatureHerbs || type == TileID.MatureHerbs)
                 {
-                    for (int yTile = j - growthRange; yTile <= j + growthRange; yTile++)
+                    int growthRange = 12; //range at which Growth Stations take effect
+                    int growthRate = 10 * ((Main.tile[i, j].frameX / 18 == 6) ? 2 : 1); //growth rate multiplier - doubled for shiverthorn, may adjust
+                    bool station1flag = false;
+                    for (int xTile = i - growthRange; xTile <= i + growthRange; xTile++)
                     {
-                        station1flag = Framing.GetTileSafely(xTile, yTile).type == ModContent.TileType<Tiles.GrowthLantern>();
-                        if (Framing.GetTileSafely(xTile, yTile).type == ModContent.TileType<Tiles.SpiritLantern>())
+                        for (int yTile = j - growthRange; yTile <= j + growthRange; yTile++)
                         {
-                            for (int k = 1; k < growthRate * 3; k++)
+                            station1flag = Framing.GetTileSafely(xTile, yTile).type == ModContent.TileType<Tiles.GrowthLantern>();
+                            if (Framing.GetTileSafely(xTile, yTile).type == ModContent.TileType<Tiles.SpiritLantern>())
                             {
-                                WorldGen.GrowAlch(i, j);
-                                if (Main.tile[i, j].type != type)
-                                break;
+                                for (int k = 1; k < growthRate * 3; k++)
+                                {
+                                    WorldGen.GrowAlch(i, j);
+                                    if (Main.tile[i, j].type != type)
+                                        break;
+                                }
+                                if (Main.netMode != NetmodeID.SinglePlayer && Main.tile[i, j].type != type)
+                                    NetMessage.SendTileSquare(-1, i, j, 1);
+                                return;
                             }
-                            if (Main.netMode != NetmodeID.SinglePlayer && Main.tile[i, j].type != type)
-                                NetMessage.SendTileSquare(-1, i, j, 1);
-                            return;
                         }
                     }
-                }
-                if (station1flag)
-                {
-                    for (int k = 1; k < growthRate; k++)
+                    if (station1flag)
                     {
-                        WorldGen.GrowAlch(i, j);
-                        if (Main.tile[i, j].type != type)
-                        break;
+                        for (int k = 1; k < growthRate; k++)
+                        {
+                            WorldGen.GrowAlch(i, j);
+                            if (Main.tile[i, j].type != type)
+                                break;
+                        }
+                        if (Main.netMode != NetmodeID.SinglePlayer && Main.tile[i, j].type != type)
+                            NetMessage.SendTileSquare(-1, i, j, 1);
                     }
-                    if (Main.netMode != NetmodeID.SinglePlayer && Main.tile[i, j].type != type)
-                        NetMessage.SendTileSquare(-1, i, j, 1);
                 }
             }
         }
