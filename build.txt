@@ -2,4 +2,5 @@ displayName = BotanyPlus
 author = NeonSea
 version = 0.1
 buildIgnore = Resource/*
+homepage = https://forums.terraria.org/index.php?threads/botanyplus-alchemy-plant-enhancement-mod.104237/
 includeSource = true
