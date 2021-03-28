@@ -9,7 +9,7 @@ namespace BotanyPlus
     {
         public override void RandomUpdate(int i, int j, int type)
         {
-            if (Main.tileAlch[type])
+            if (Main.tileAlch[type] && type < TileID.BloomingHerbs)
             {
                 int growthRange = 12; //range at which Growth Stations take effect
                 int growthRate = 10 * ((Main.tile[i,j].frameX / 18 == 6) ? 2 : 1); //growth rate multiplier - doubled for shiverthorn, may adjust
@@ -44,8 +44,6 @@ namespace BotanyPlus
                     if (Main.netMode != NetmodeID.SinglePlayer && Main.tile[i, j].type != type)
                         NetMessage.SendTileSquare(-1, i, j, 1);
                 }
-                    
-                
             }
         }
 
