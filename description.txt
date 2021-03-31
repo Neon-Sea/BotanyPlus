@@ -9,3 +9,6 @@ Changes:
 	The Staff of Regrowth and Gaia Staff can be auto-selected when hovering over plants, and will target plants while Smart Cursor is enabled.
 
 This mod is a work-in-progress, contents are subject to change and further features may be added.
+
+v0.1.1 changes:
+	Fixed issue with blooming plants not being detected correctly

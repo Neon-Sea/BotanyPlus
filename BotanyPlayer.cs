@@ -130,10 +130,47 @@ namespace BotanyPlus
 				for (int yCheck = maxUp; yCheck <= maxDown; yCheck++)
 				{
 					Tile checkTile = Main.tile[xCheck, yCheck];
-					if (checkTile.type == 84)
-					{
-						listTargets.Add(new Tuple<int, int>(xCheck, yCheck));
+					bool isBloomingPlant = checkTile.type == TileID.BloomingHerbs;
+					if (checkTile.type == TileID.MatureHerbs)
+                    {
+						switch (checkTile.frameX / 18)
+						{
+							case 0:
+								{
+									if (Main.dayTime)
+										isBloomingPlant = true;
+									break;
+								}
+							case 1:
+								{
+									if (!Main.dayTime)
+										isBloomingPlant = true;
+									break;
+								}
+							case 3:
+								{
+									if (!Main.dayTime && (Main.bloodMoon || Main.moonPhase == 0))
+										isBloomingPlant = true;
+									break;
+								}
+							case 4:
+								{
+									if (Main.raining || Main.cloudAlpha > 0f)
+										isBloomingPlant = true;
+									break;
+								}
+							case 5:
+								{
+									if (!Main.raining && Main.dayTime && Main.time > 40500.00)
+										isBloomingPlant = true;
+									break;
+								}
+							default:
+								break;
+						}
 					}
+					if (isBloomingPlant)
+						listTargets.Add(new Tuple<int, int>(xCheck, yCheck));
 				}
 			}
 			if (listTargets.Count > 0)
