@@ -75,9 +75,9 @@ namespace BotanyPlus.Tiles
 			{
 				for (int yTile = j - growthRange; yTile <= j + growthRange; yTile++)
 				{
-					if (Framing.GetTileSafely(xTile, yTile).type == TileID.MatureHerbs) //83
+					if (Framing.GetTileSafely(xTile, yTile).type == TileID.MatureHerbs)
 					{
-						Main.tile[xTile, yTile].type = TileID.BloomingHerbs; //84
+						Main.tile[xTile, yTile].type = TileID.BloomingHerbs;
 						WorldGen.SquareTileFrame(xTile, yTile);
 						if (Main.netMode != NetmodeID.SinglePlayer)
 							NetMessage.SendTileSquare(-1, xTile, yTile, 1);
@@ -96,47 +96,50 @@ namespace BotanyPlus.Tiles
 					for (int yTile = j - growthRange; yTile <= j + growthRange; yTile++)
 					{
 						Tile checkTile = Framing.GetTileSafely(xTile, yTile);
-						if (checkTile.type == TileID.BloomingHerbs) //84
+						if (checkTile.type == TileID.BloomingHerbs)
 						{
 							switch (checkTile.frameX / 18)
 							{
-								case 0: //daybloom
+								/*case 0: //daybloom
 									if (!Main.dayTime)
 									{
-										Main.tile[xTile, yTile].type = TileID.MatureHerbs; //83
+										Main.tile[xTile, yTile].type = TileID.MatureHerbs;
 									}
-									break;
-								case 1: //moonglow
+									break;*/
+								/*case 1: //moonglow
 									if (Main.dayTime)
 									{
 										Main.tile[xTile, yTile].type = TileID.MatureHerbs;
 									}
-									break;
+									break;*/
 								case 2: //blinkroot - random chance
 									if (WorldGen.genRand.Next(2) == 0)
 									{
 										Main.tile[xTile, yTile].type = TileID.MatureHerbs;
 									}
 									break;
-								case 3: //deathweed
+								/*case 3: //deathweed
 									if (Main.dayTime || (!Main.bloodMoon && Main.moonPhase != 0))
 									{
 										Main.tile[xTile, yTile].type = TileID.MatureHerbs;
 									}
-									break;
-								case 4: //waterleaf
+									break;*/
+								/*case 4: //waterleaf
 									if (!Main.raining && Main.cloudAlpha <= 0f)
 									{
 										Main.tile[xTile, yTile].type = TileID.MatureHerbs;
 									}
-									break;
-								case 5: //fireblossom
+									break;*/
+								/*case 5: //fireblossom
 									if (Main.raining || !Main.dayTime || Main.time <= 40500.0)
 									{
 										Main.tile[xTile, yTile].type = TileID.MatureHerbs;
 									}
+									break;*/
+								case 6: //shiverthorn
 									break;
 								default:
+									Main.tile[xTile, yTile].type = TileID.MatureHerbs;
 									break;
 							}
 							WorldGen.TileFrame(xTile, yTile);
