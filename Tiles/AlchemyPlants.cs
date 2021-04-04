@@ -21,7 +21,7 @@ namespace BotanyPlus
                         station1flag = Framing.GetTileSafely(xTile, yTile).type == ModContent.TileType<Tiles.GrowthLantern>();
                         if (Framing.GetTileSafely(xTile, yTile).type == ModContent.TileType<Tiles.SpiritLantern>())
                         {
-                            for (int k = 1; k < growthRate * 3; k++)
+                            for (int k = 1; k < growthRate * 2; k++)
                             {
                                 WorldGen.GrowAlch(i, j);
                                 if (Main.tile[i, j].type != type)
