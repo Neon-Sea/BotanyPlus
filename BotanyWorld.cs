@@ -11,7 +11,6 @@ namespace BotanyPlus
 {
     public class BotanyWorld : ModWorld
     {
-        public List<Tuple<int, int>> growSaplings = new List<Tuple<int, int>>();
 
         public override void PostDrawTiles()
         {
