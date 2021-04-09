@@ -111,64 +111,85 @@ namespace BotanyPlus
             else return false;
         }
 
-        public override bool Drop(int i, int j, int type) //only works in single player due to auto planting - see GaiaStaff for item drop code in multiplayer
+        public override void KillTile(int i, int j, int type, ref bool fail, ref bool effectOnly, ref bool noItem)
         {
-            if (type == 83 || type == 84)
+            if (Main.netMode != NetmodeID.Server && (type == TileID.MatureHerbs || type == TileID.BloomingHerbs))
             {
-                int targetStyle = Framing.GetTileSafely(i, j).frameX / 18;
-                bool isBloomingPlant = type == 84;
-                switch (targetStyle)
+                Player player = Main.player[Main.myPlayer];
+                Tile targetTile = Framing.GetTileSafely(i, j);
+                bool isBloomingPlant = type == TileID.BloomingHerbs;
+                int targetStyle = targetTile.frameX / 18;
+                if (type == TileID.MatureHerbs)
                 {
-                    case 0:
-                        {
-                            if (Main.dayTime)
-                                isBloomingPlant = true;
+                    switch (targetStyle)
+                    {
+                        case 0:
+                            {
+                                if (Main.dayTime)
+                                    isBloomingPlant = true;
+                                break;
+                            }
+                        case 1:
+                            {
+                                if (!Main.dayTime)
+                                    isBloomingPlant = true;
+                                break;
+                            }
+                        case 3:
+                            {
+                                if (!Main.dayTime && (Main.bloodMoon || Main.moonPhase == 0))
+                                    isBloomingPlant = true;
+                                break;
+                            }
+                        case 4:
+                            {
+                                if (Main.raining || Main.cloudAlpha > 0f)
+                                    isBloomingPlant = true;
+                                break;
+                            }
+                        case 5:
+                            {
+                                if (!Main.raining && Main.dayTime && Main.time > 40500.00)
+                                    isBloomingPlant = true;
+                                break;
+                            }
+                        default:
                             break;
-                        }
-                    case 1:
-                        {
-                            if (!Main.dayTime)
-                                isBloomingPlant = true;
-                            break;
-                        }
-                    case 3:
-                        {
-                            if (!Main.dayTime && (Main.bloodMoon || Main.moonPhase == 0))
-                                isBloomingPlant = true;
-                            break;
-                        }
-                    case 4:
-                        {
-                            if (Main.raining || Main.cloudAlpha > 0f)
-                                isBloomingPlant = true;
-                            break;
-                        }
-                    case 5:
-                        {
-                            if (!Main.raining && Main.dayTime && Main.time > 40500.00)
-                                isBloomingPlant = true;
-                            break;
-                        }
-                    default:
-                        break;
+                    }
                 }
-                if (isBloomingPlant && Main.player[Player.FindClosest(new Vector2(i * 16, j * 16), 16, 16)].HeldItem.type == ModContent.ItemType<Items.GaiaStaff>())
+                if (isBloomingPlant && (player.HeldItem.type == ItemID.StaffofRegrowth || player.HeldItem.type == ModContent.ItemType<Items.GaiaStaff>()))
                 {
+                    Tile baseTile = Framing.GetTileSafely(i, j + 1);
                     int plantDrop;
+                    int seedDrop;
                     if (targetStyle != 6)
                     {
                         plantDrop = 313 + targetStyle;
+                        seedDrop = 307 + targetStyle;
                     }
                     else
                     {
                         plantDrop = 2358;
+                        seedDrop = 2357;
                     }
-                    Item.NewItem(i * 16, j * 16, 16, 16, plantDrop, WorldGen.genRand.Next(1, 6));
-                    return false;
+                    int item = Item.NewItem(i * 16, j * 16, 16, 16, plantDrop,
+                                            WorldGen.genRand.Next(player.HeldItem.type == ItemID.StaffofRegrowth ? 1 : 2, player.HeldItem.type == ItemID.StaffofRegrowth ? 3 : 6));
+                    if (Main.netMode != NetmodeID.SinglePlayer)
+                        NetMessage.SendData(MessageID.SyncItem, -1, -1, null, item, 1f);
+                    item = Item.NewItem(i * 16, j * 16, 16, 16, seedDrop, WorldGen.genRand.Next(1, 6));
+                    if (Main.netMode != NetmodeID.SinglePlayer)
+                        NetMessage.SendData(MessageID.SyncItem, -1, -1, null, item, 1f);
+                    if (baseTile.type == TileID.ClayPot || baseTile.type == TileID.PlanterBox)
+                    {
+                        fail = true;
+                        targetTile.type = 82;
+                        WorldGen.SquareTileFrame(i, j);
+                        if (Main.netMode != NetmodeID.SinglePlayer)
+                            NetMessage.SendTileSquare(-1, i, j, 1);
+                    }
+                    noItem = true;
                 }
-                else return true;
             }
-            else return true;
         }
     }
 }

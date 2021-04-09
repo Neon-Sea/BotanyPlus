@@ -1,6 +1,7 @@
 using System.IO;
 using Terraria.ModLoader;
 using Terraria;
+using Terraria.ID;
 
 namespace BotanyPlus
 {
@@ -8,11 +9,21 @@ namespace BotanyPlus
 	{
         public override void HandlePacket(BinaryReader reader, int whoAmI)
         {
-            int growX = reader.ReadInt32();
-            int growY = reader.ReadInt32();
-            if ((Main.tile[growX, growY].frameX < 324 || Main.tile[growX, growY].frameX >= 540)
-                ? WorldGen.GrowTree(growX, growY) : WorldGen.GrowPalmTree(growX, growY))
-                WorldGen.TreeGrowFXCheck(growX, growY);
+            switch (reader.ReadByte())
+            {
+                case 0:
+                    StaffGrow(reader.ReadInt32(), reader.ReadInt32());
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        public void StaffGrow(int x, int y)
+        {
+            if ((Main.tile[x, y].frameX < 324 || Main.tile[x, y].frameX >= 540)
+                ? WorldGen.GrowTree(x, y) : WorldGen.GrowPalmTree(x, y))
+                WorldGen.TreeGrowFXCheck(x, y);
         }
     }
 }

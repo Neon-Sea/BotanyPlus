@@ -92,45 +92,19 @@ namespace BotanyPlus.Items
 				}
 			}
 			if (isBloomingPlant &&
-				player.position.X / 16f - (float)Player.tileRangeX - (float)player.inventory[player.selectedItem].tileBoost - (float)player.blockRange <= (float)Player.tileTargetX && 
-				(player.position.X + (float)player.width) / 16f + (float)Player.tileRangeX + (float)player.inventory[player.selectedItem].tileBoost - 1f + (float)player.blockRange >= (float)Player.tileTargetX &&
-				player.position.Y / 16f - (float)Player.tileRangeY - (float)player.inventory[player.selectedItem].tileBoost - (float)player.blockRange <= (float)Player.tileTargetY && 
-				(player.position.Y + (float)player.height) / 16f + (float)Player.tileRangeY + (float)player.inventory[player.selectedItem].tileBoost - 2f + (float)player.blockRange >= (float)Player.tileTargetY)
+				player.position.X / 16f - Player.tileRangeX - player.inventory[player.selectedItem].tileBoost - player.blockRange <= Player.tileTargetX && 
+				(player.position.X + player.width) / 16f + Player.tileRangeX + player.inventory[player.selectedItem].tileBoost - 1f + player.blockRange >= Player.tileTargetX &&
+				player.position.Y / 16f - Player.tileRangeY - player.inventory[player.selectedItem].tileBoost - player.blockRange <= Player.tileTargetY && 
+				(player.position.Y + player.height) / 16f + Player.tileRangeY + player.inventory[player.selectedItem].tileBoost - 2f + player.blockRange >= Player.tileTargetY)
 			{
-				Tile baseTile = Framing.GetTileSafely(Player.tileTargetX, Player.tileTargetY + 1);
 				WorldGen.KillTile(Player.tileTargetX, Player.tileTargetY);
-				if (Main.netMode != NetmodeID.SinglePlayer)
-				{
-					int plantDrop;
-					int seedDrop;
-					if (targetStyle != 6)
-					{
-						plantDrop = 313 + targetStyle;
-						seedDrop = 307 + targetStyle;
-					}
-					else
-					{
-						plantDrop = 2358;
-						seedDrop = 2357;
-					}
-					int item = Item.NewItem(Player.tileTargetX * 16, Player.tileTargetY * 16, 16, 16, plantDrop, WorldGen.genRand.Next(1, 6));
-					NetMessage.SendData(MessageID.SyncItem, -1, -1, null, item, 1f);
-					item = Item.NewItem(Player.tileTargetX * 16, Player.tileTargetY * 16, 16, 16, seedDrop, WorldGen.genRand.Next(1, 6));
-					NetMessage.SendData(MessageID.SyncItem, -1, -1, null, item, 1f);
-				}
-				if (baseTile.type == TileID.ClayPot || baseTile.type == TileID.PlanterBox)
-                {
-					WorldGen.PlaceTile(Player.tileTargetX, Player.tileTargetY, 82, false, false, -1, targetStyle);
-					WorldGen.SquareTileFrame(Player.tileTargetX, Player.tileTargetY);
-					if (Main.netMode != NetmodeID.SinglePlayer)
-						NetMessage.SendTileSquare(-1, Player.tileTargetX, Player.tileTargetY, 1);
-				}
 			}
 			if (targetTile.type == TileID.Saplings)
 			{
 				if (Main.netMode != NetmodeID.SinglePlayer)
 				{
 					ModPacket growCoord = mod.GetPacket();
+					growCoord.Write((byte)0);
 					growCoord.Write(Player.tileTargetX);
 					growCoord.Write(Player.tileTargetY);
 					growCoord.Send();
@@ -138,7 +112,6 @@ namespace BotanyPlus.Items
 				else if ((Main.tile[Player.tileTargetX, Player.tileTargetY].frameX < 324 || Main.tile[Player.tileTargetX, Player.tileTargetY].frameX >= 540)
 					? WorldGen.GrowTree(Player.tileTargetX, Player.tileTargetY) : WorldGen.GrowPalmTree(Player.tileTargetX, Player.tileTargetY))
 					WorldGen.TreeGrowFXCheck(Player.tileTargetX, Player.tileTargetY);
-
 			}
 			if (targetTile.type == TileID.Stone)
             {
