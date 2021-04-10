@@ -3,7 +3,12 @@ using Terraria;
 using Terraria.World.Generation;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria.ObjectData;
+using System.IO;
 using Microsoft.Xna.Framework;
+using MonoMod.Cil;
+using Mono.Cecil.Cil;
+using System;
 
 namespace BotanyPlus.Items
 {
@@ -51,54 +56,6 @@ namespace BotanyPlus.Items
         public override bool UseItem(Player player)
         {
 			Tile targetTile = Framing.GetTileSafely(Player.tileTargetX, Player.tileTargetY);
-			bool isBloomingPlant = targetTile.type == TileID.BloomingHerbs;
-			int targetStyle = targetTile.frameX / 18;
-			if (targetTile.type == TileID.MatureHerbs)
-			{
-				switch (targetStyle)
-				{
-					case 0:
-						{
-							if (Main.dayTime)
-								isBloomingPlant = true;
-							break;
-						}
-					case 1:
-						{
-							if (!Main.dayTime)
-								isBloomingPlant = true;
-							break;
-						}
-					case 3:
-                        {
-							if (!Main.dayTime && (Main.bloodMoon || Main.moonPhase == 0))
-								isBloomingPlant = true;
-							break;
-                        }
-					case 4:
-                        {
-							if (Main.raining || Main.cloudAlpha > 0f)
-								isBloomingPlant = true;
-							break;
-                        }
-					case 5:
-                        {
-							if (!Main.raining && Main.dayTime && Main.time > 40500.00)
-								isBloomingPlant = true;
-							break;
-                        }
-					default:
-						break;
-				}
-			}
-			if (isBloomingPlant &&
-				player.position.X / 16f - Player.tileRangeX - player.inventory[player.selectedItem].tileBoost - player.blockRange <= Player.tileTargetX && 
-				(player.position.X + player.width) / 16f + Player.tileRangeX + player.inventory[player.selectedItem].tileBoost - 1f + player.blockRange >= Player.tileTargetX &&
-				player.position.Y / 16f - Player.tileRangeY - player.inventory[player.selectedItem].tileBoost - player.blockRange <= Player.tileTargetY && 
-				(player.position.Y + player.height) / 16f + Player.tileRangeY + player.inventory[player.selectedItem].tileBoost - 2f + player.blockRange >= Player.tileTargetY)
-			{
-				WorldGen.KillTile(Player.tileTargetX, Player.tileTargetY);
-			}
 			if (targetTile.type == TileID.Saplings)
 			{
 				if (Main.netMode != NetmodeID.SinglePlayer)
@@ -142,7 +99,34 @@ namespace BotanyPlus.Items
 			}
 			return true;
         }
-    }
+
+        public override bool Autoload(ref string name)
+        {
+			IL.Terraria.Player.PlaceThing += HookPlaceThing;
+			return base.Autoload(ref name);
+        }
+
+		private void HookPlaceThing(ILContext il)
+		{
+			var c = new ILCursor(il);
+			if (!c.TryGotoNext(i => i.MatchLdcI4(213)))
+			{
+				return;
+			}
+			ILLabel labelOr = c.DefineLabel();
+			ILLabel labelFalse = c.DefineLabel();
+			c.Index++;
+			c.GotoNext(i => i.MatchLdcI4(213));
+			c.GotoNext(i => i.MatchBneUn(out labelFalse));
+			c.Remove();
+			c.Emit(OpCodes.Beq, labelOr);
+			c.Emit(OpCodes.Ldarg_0);
+			c.EmitDelegate<Func<Player, bool>>(player => player.HeldItem.type == ModContent.ItemType<GaiaStaff>());
+			c.Emit(OpCodes.Brfalse, labelFalse);
+			c.MarkLabel(labelOr);
+			return;
+		}
+	}
 
 	public class GaiaStaffGlobal : GlobalItem
     {
