@@ -72,26 +72,26 @@ namespace BotanyPlus.Items
 			}
 			if (targetTile.type == TileID.Stone)
             {
-				int num50 = 0;
-				int num51 = 0;
+				int mossID = 0;
+				int mossCount = 0;
 				Point point = player.Center.ToTileCoordinates();
 				Dictionary<ushort, int> dictionary = new Dictionary<ushort, int>();
 				WorldUtils.Gen(new Point(point.X - 25, point.Y - 25), new Shapes.Rectangle(50, 50), new Actions.TileScanner(182, 180, 179, 183, 181, 381).Output(dictionary));
 				foreach (KeyValuePair<ushort, int> item in dictionary)
 				{
-					if (item.Value > num51)
+					if (item.Value > mossCount)
 					{
-						num51 = item.Value;
-						num50 = item.Key;
+						mossCount = item.Value;
+						mossID = item.Key;
 					}
 				}
-				if (num51 == 0)
+				if (mossCount == 0)
 				{
-					num50 = Utils.SelectRandom<int>(Main.rand, 182, 180, 179, 183, 181);
+					mossID = Utils.SelectRandom<int>(Main.rand, 182, 180, 179, 183, 181);
 				}
-				if (num50 != 0)
+				if (mossID != 0)
 				{
-					Main.tile[Player.tileTargetX, Player.tileTargetY].type = (ushort)num50;
+					Main.tile[Player.tileTargetX, Player.tileTargetY].type = (ushort)mossID;
 					WorldGen.SquareTileFrame(Player.tileTargetX, Player.tileTargetY);
 					if (Main.netMode != NetmodeID.SinglePlayer)
 						NetMessage.SendTileSquare(-1, Player.tileTargetX, Player.tileTargetY, 1);

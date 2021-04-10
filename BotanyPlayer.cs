@@ -14,13 +14,13 @@ namespace BotanyPlus
 		public override void PostUpdate()
 		{
 			tmTable = false;
-			int num = 4;
-			int num2 = 3;
-			int num3 = (int)((player.position.X + (float)(player.width / 2)) / 16f);
-			int num4 = (int)((player.position.Y + (float)player.height) / 16f);
-			for (int j = num3 - num; j <= num3 + num; j++)
+			int checkWidth = 4;
+			int checkHeight = 3;
+			int playerX = (int)((player.position.X + (float)(player.width / 2)) / 16f);
+			int playerY = (int)((player.position.Y + (float)player.height) / 16f);
+			for (int j = playerX - checkWidth; j <= playerX + checkWidth; j++)
 			{
-				for (int k = num4 - num2; k < num4 + num2; k++)
+				for (int k = playerY - checkHeight; k < playerY + checkHeight; k++)
 				{
 					if (Framing.GetTileSafely(j, k).type == ModContent.TileType<Tiles.TransmutationTable>())
                     {
@@ -175,15 +175,15 @@ namespace BotanyPlus
 			}
 			if (listTargets.Count > 0)
 			{
-				float num130 = -1f;
+				float distanceToMouse = -1f;
 				Tuple<int, int> tupleCoords = listTargets[0];
-				for (int num131 = 0; num131 < listTargets.Count; num131++)
+				for (int target = 0; target < listTargets.Count; target++)
 				{
-					float num132 = Vector2.Distance(new Vector2(listTargets[num131].Item1, listTargets[num131].Item2) * 16f + Vector2.One * 8f, mouse);
-					if (num130 == -1f || num132 < num130)
+					float distanceNew = Vector2.Distance(new Vector2(listTargets[target].Item1, listTargets[target].Item2) * 16f + Vector2.One * 8f, mouse);
+					if (distanceToMouse == -1f || distanceNew < distanceToMouse)
 					{
-						num130 = num132;
-						tupleCoords = listTargets[num131];
+						distanceToMouse = distanceNew;
+						tupleCoords = listTargets[target];
 					}
 				}
 				if (Collision.InTileBounds(tupleCoords.Item1, tupleCoords.Item2, maxLeft, maxUp, maxRight, maxDown))
