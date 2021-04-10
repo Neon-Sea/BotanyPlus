@@ -34,7 +34,7 @@ namespace BotanyPlus.Items
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(ItemID.AlchemyTable);
 			recipe.AddIngredient(ItemID.PhilosophersStone);
-			recipe.AddIngredient(ItemID.HallowedBar, 4);
+			recipe.AddIngredient(ItemID.HallowedBar, 5);
 			recipe.AddTile(TileID.MythrilAnvil);
 			recipe.SetResult(this);
 			recipe.AddRecipe();
