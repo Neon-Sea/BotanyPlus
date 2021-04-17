@@ -5,8 +5,8 @@ using Terraria.ID;
 
 namespace BotanyPlus
 {
-	public class BotanyPlus : Mod
-	{
+    public class BotanyPlus : Mod
+    {
         public override void HandlePacket(BinaryReader reader, int whoAmI)
         {
             switch (reader.ReadByte())
