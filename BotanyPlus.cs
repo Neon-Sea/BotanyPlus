@@ -11,7 +11,7 @@ namespace BotanyPlus
         {
             switch (reader.ReadByte())
             {
-                case 0:
+                case 0: //sapling coordinates
                     StaffGrow(reader.ReadInt32(), reader.ReadInt32());
                     break;
                 default:

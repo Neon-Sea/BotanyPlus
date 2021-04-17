@@ -70,7 +70,9 @@ namespace BotanyPlus.Tiles
 
         public override void NearbyEffects(int i, int j, bool closer)
 		{
-			int growthRange = 12; //range at which Growth Lanterns take effect
+			//turn all nearby mature herbs into blooming herbs. this may break something that i haven't noticed yet as vanilla does not
+			//actually use tile 84 for herbs other than shiverthorn and blinkroot
+			int growthRange = 12;
 			for (int xTile = i - growthRange; xTile <= i + growthRange; xTile++)
 			{
 				for (int yTile = j - growthRange; yTile <= j + growthRange; yTile++)
@@ -90,7 +92,7 @@ namespace BotanyPlus.Tiles
 		{
 			if (!fail)
 			{
-				int growthRange = 12; //range at which Growth Lanterns take effect
+				int growthRange = 12;
 				for (int xTile = i - growthRange; xTile <= i + growthRange; xTile++)
 				{
 					for (int yTile = j - growthRange; yTile <= j + growthRange; yTile++)
@@ -100,43 +102,14 @@ namespace BotanyPlus.Tiles
 						{
 							switch (checkTile.frameX / 18)
 							{
-								/*case 0: //daybloom
-									if (!Main.dayTime)
-									{
-										Main.tile[xTile, yTile].type = TileID.MatureHerbs;
-									}
-									break;*/
-								/*case 1: //moonglow
-									if (Main.dayTime)
-									{
-										Main.tile[xTile, yTile].type = TileID.MatureHerbs;
-									}
-									break;*/
-								case 2: //blinkroot - random chance
+								//turn herbs back to their mature form. blinkroot has a random chance to stay blooming, shiverthorn is left as is
+								case 2:
 									if (WorldGen.genRand.Next(2) == 0)
 									{
 										Main.tile[xTile, yTile].type = TileID.MatureHerbs;
 									}
 									break;
-								/*case 3: //deathweed
-									if (Main.dayTime || (!Main.bloodMoon && Main.moonPhase != 0))
-									{
-										Main.tile[xTile, yTile].type = TileID.MatureHerbs;
-									}
-									break;*/
-								/*case 4: //waterleaf
-									if (!Main.raining && Main.cloudAlpha <= 0f)
-									{
-										Main.tile[xTile, yTile].type = TileID.MatureHerbs;
-									}
-									break;*/
-								/*case 5: //fireblossom
-									if (Main.raining || !Main.dayTime || Main.time <= 40500.0)
-									{
-										Main.tile[xTile, yTile].type = TileID.MatureHerbs;
-									}
-									break;*/
-								case 6: //shiverthorn
+								case 6:
 									break;
 								default:
 									Main.tile[xTile, yTile].type = TileID.MatureHerbs;

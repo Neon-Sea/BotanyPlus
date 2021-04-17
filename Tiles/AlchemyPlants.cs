@@ -9,6 +9,8 @@ namespace BotanyPlus
     {
         public override void RandomUpdate(int i, int j, int type)
         {
+            //code to increase growth rate if a growth or spirit lantern is nearby. this just runs the vanilla GrowAlch method several times depending on which lantern is nearby.
+            //kind of sloppy, might make my own system to do this eventually
             if (type == TileID.ImmatureHerbs || type == TileID.MatureHerbs)
             {
                 int growthRange = 12; //range at which Growth Stations take effect
@@ -50,7 +52,7 @@ namespace BotanyPlus
         public override bool AutoSelect(int i, int j, int type, Item item)
         {
             Player player = Main.player[Main.myPlayer];
-
+            //make so the staff of regrowth and gaia staff can be auto selected for blooming herbs when holding shift (or whatever key auto select is set to)
             if (type == 83 || type == 84)
             {
                 int targetStyle = Framing.GetTileSafely(i, j).frameX / 18;
@@ -113,6 +115,7 @@ namespace BotanyPlus
 
         public override void KillTile(int i, int j, int type, ref bool fail, ref bool effectOnly, ref bool noItem)
         {
+            //KillTile override for blooming herbs so that items drop properly in both single and multiplayer, and makes seeds replant if holding either staff
             if (Main.netMode != NetmodeID.Server && (type == TileID.MatureHerbs || type == TileID.BloomingHerbs))
             {
                 Player player = Main.player[Main.myPlayer];

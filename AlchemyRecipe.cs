@@ -6,6 +6,7 @@ namespace BotanyPlus
     {
         public static int Consume(int numRequired)
         {
+            //this is called by the IL patch in Recipe.Create() (see TransmutationTable.cs), saves ingredients with 2/3 chance
             if (Main.player[Main.myPlayer].GetModPlayer<BotanyPlayer>().tmTable)
             {
                 int saved = 0;

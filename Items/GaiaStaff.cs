@@ -56,6 +56,7 @@ namespace BotanyPlus.Items
         public override bool UseItem(Player player)
         {
 			Tile targetTile = Framing.GetTileSafely(Player.tileTargetX, Player.tileTargetY);
+			//check if target is a sapling, if multiplayer send coordinates to server, if singleplayer grow tree
 			if (targetTile.type == TileID.Saplings)
 			{
 				if (Main.netMode != NetmodeID.SinglePlayer)
@@ -70,6 +71,7 @@ namespace BotanyPlus.Items
 					? WorldGen.GrowTree(Player.tileTargetX, Player.tileTargetY) : WorldGen.GrowPalmTree(Player.tileTargetX, Player.tileTargetY))
 					WorldGen.TreeGrowFXCheck(Player.tileTargetX, Player.tileTargetY);
 			}
+			//adapted from vanilla code, if target is stone, counts nearby moss tiles and creates the most prominent type or chooses randomly if none are found
 			if (targetTile.type == TileID.Stone)
             {
 				int mossID = 0;
@@ -108,6 +110,7 @@ namespace BotanyPlus.Items
 
 		private void HookPlaceThing(ILContext il)
 		{
+			//staff of regrowth's ability to break plants is hardcoded, this IL patch makes it also check for the gaia staff in Player.PlaceThing()
 			var c = new ILCursor(il);
 			if (!c.TryGotoNext(i => i.MatchLdcI4(213)))
 			{

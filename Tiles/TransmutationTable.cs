@@ -47,6 +47,7 @@ namespace BotanyPlus.Tiles
 
 		private void HookCreate(ILContext il)
         {
+			//because there is no GlobalRecipe.ConsumeItem() this IL patch adds my own for any bottle ("alchemy") recipes
 			int itemIndex = 0;
 			int stackIndex = 0;
 			var c = new ILCursor(il);

@@ -14,6 +14,7 @@ namespace BotanyPlus
 
         public override void PostDrawTiles()
         {
+            //draw range preview square if holding a lantern in placement range
             int itemType = Main.player[Main.myPlayer].HeldItem.type;
             if (Main.placementPreview && Main.player[Main.myPlayer].showItemIcon
                 && (itemType == ModContent.ItemType<Items.GrowthLantern>() || itemType == ModContent.ItemType<Items.SpiritLantern>()))

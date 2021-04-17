@@ -13,6 +13,7 @@ namespace BotanyPlus
 
 		public override void PostUpdate()
 		{
+			//check for player being near a transmutation table
 			tmTable = false;
 			int checkWidth = 4;
 			int checkHeight = 3;
@@ -32,6 +33,7 @@ namespace BotanyPlus
 		}
         public override bool PreItemCheck()
         {
+			//vanilla does this so it's probably important?
 			if (player.HeldItem.type == ItemID.StaffofRegrowth || player.HeldItem.type == ModContent.ItemType<Items.GaiaStaff>())
 				try
                 {
@@ -47,19 +49,21 @@ namespace BotanyPlus
 
 		public void Cursor()
 		{
-			if (player.whoAmI != Main.myPlayer) return;
+			//adapted from vanilla, smart cursor code
+			if (player.whoAmI != Main.myPlayer)
+				return;
 			Main.SmartCursorShowing = false;
-			if (!Main.SmartCursorEnabled) return;
+			if (!Main.SmartCursorEnabled)
+				return;
 			Item item = player.inventory[player.selectedItem];
 			Vector2 mouse = Main.screenPosition + new Vector2(Main.mouseX, Main.mouseY);
 			if (player.gravDir == -1f)
-			{
 				mouse.Y = Main.screenPosition.Y + Main.screenHeight - Main.mouseY;
-			}
 			int targetX = (int)MathHelper.Clamp(Player.tileTargetX, 10, Main.maxTilesX - 10);
 			int targetY = (int)MathHelper.Clamp(Player.tileTargetY, 10, Main.maxTilesY - 10);
 			bool disableCursor = false;
-			if (Main.tile[targetX, targetY] == null) return;
+			if (Main.tile[targetX, targetY] == null)
+				return;
 			if (Main.tile[targetX, targetY].active())
 			{
 				switch (Main.tile[targetX, targetY].type)
@@ -123,8 +127,9 @@ namespace BotanyPlus
 			maxRight = Utils.Clamp(maxRight, 10, Main.maxTilesX - 10);
 			maxDown  = Utils.Clamp(maxDown, 10, Main.maxTilesY - 10);
 			maxUp    = Utils.Clamp(maxUp, 10, Main.maxTilesY - 10);
-			if (disableCursor && targetX >= maxLeft && targetX <= maxRight && targetY <= maxDown && targetY >= maxUp) return;
-			List<Tuple<int, int>> listTargets = new List<Tuple<int, int>>();
+			if (disableCursor && targetX >= maxLeft && targetX <= maxRight && targetY <= maxDown && targetY >= maxUp)
+				return;
+			List<Tuple<int, int>> potentialTargetTiles = new List<Tuple<int, int>>();
 			for (int xCheck = maxLeft; xCheck <= maxRight; xCheck++)
 			{
 				for (int yCheck = maxUp; yCheck <= maxDown; yCheck++)
@@ -170,29 +175,29 @@ namespace BotanyPlus
 						}
 					}
 					if (isBloomingPlant)
-						listTargets.Add(new Tuple<int, int>(xCheck, yCheck));
+						potentialTargetTiles.Add(new Tuple<int, int>(xCheck, yCheck));
 				}
 			}
-			if (listTargets.Count > 0)
+			if (potentialTargetTiles.Count > 0)
 			{
 				float distanceToMouse = -1f;
-				Tuple<int, int> tupleCoords = listTargets[0];
-				for (int target = 0; target < listTargets.Count; target++)
+				Tuple<int, int> currentTileCoords = potentialTargetTiles[0];
+				for (int target = 0; target < potentialTargetTiles.Count; target++)
 				{
-					float distanceNew = Vector2.Distance(new Vector2(listTargets[target].Item1, listTargets[target].Item2) * 16f + Vector2.One * 8f, mouse);
+					float distanceNew = Vector2.Distance(new Vector2(potentialTargetTiles[target].Item1, potentialTargetTiles[target].Item2) * 16f + Vector2.One * 8f, mouse);
 					if (distanceToMouse == -1f || distanceNew < distanceToMouse)
 					{
 						distanceToMouse = distanceNew;
-						tupleCoords = listTargets[target];
+						currentTileCoords = potentialTargetTiles[target];
 					}
 				}
-				if (Collision.InTileBounds(tupleCoords.Item1, tupleCoords.Item2, maxLeft, maxUp, maxRight, maxDown))
+				if (Collision.InTileBounds(currentTileCoords.Item1, currentTileCoords.Item2, maxLeft, maxUp, maxRight, maxDown))
 				{
-					Main.SmartCursorX = (Player.tileTargetX = tupleCoords.Item1);
-					Main.SmartCursorY = (Player.tileTargetY = tupleCoords.Item2);
+					Main.SmartCursorX = (Player.tileTargetX = currentTileCoords.Item1);
+					Main.SmartCursorY = (Player.tileTargetY = currentTileCoords.Item2);
 					Main.SmartCursorShowing = true;
 				}
-				listTargets.Clear();
+				potentialTargetTiles.Clear();
 			}
 		}
     }
